@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "$PATH" | tr ':' '\n' | wc -l
+awk -F: '{n=0; for(i=1;i<=NF;i++) if($i!="") n++; print n}' <<< "$PATH"
