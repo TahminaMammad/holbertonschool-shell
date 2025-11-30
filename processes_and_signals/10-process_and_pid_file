@@ -1,21 +1,37 @@
 #!/usr/bin/env bash
-# This script manages its PID file and reacts to signals
+# This script creates a PID file, runs indefinitely, and uses signal trapping (SIGTERM, SIGINT, SIGQUIT) for controlled behavior and cleanup.
 
-PIDFILE="/var/run/myscript.pid"
-echo $$ > "$PIDFILE"
+PID_FILE="/var/run/myscript.pid"
 
-# Handle SIGINT (Ctrl+C)
-trap 'echo "Y U no love me?!"' SIGINT
+# --- Cleanup and Termination Function ---
+cleanup() {
+    # Delete the PID file if it exists.
+    if [ -f "$PID_FILE" ]; then
+        rm -f "$PID_FILE"
+    fi
+    # Terminate the script gracefully.
+    exit 0
+}
 
-# Handle SIGTERM (kill)
-trap 'echo "I hate the kill command"; rm -f "$PIDFILE"; exit' SIGTERM
+# --- Signal Traps ---
 
-# Handle SIGQUIT
-trap 'rm -f "$PIDFILE"; exit' SIGQUIT
+# SIGTERM (kill command): Display message, then cleanup and terminate.
+trap "echo I hate the kill command; cleanup" SIGTERM
 
-# Infinite loop
-while true
-do
-  echo "To infinity and beyond"
-  sleep 2
+# SIGQUIT (Ctrl+\): Cleanup and terminate silently.
+trap "cleanup" SIGQUIT
+
+# SIGINT (Ctrl+C): Display message, but DO NOT terminate. Resume the loop.
+trap "echo Y U no love me?!" SIGINT
+
+# --- Startup ---
+
+# Create the PID file containing the script's PID ($$). Requires sudo access.
+echo $$ > "$PID_FILE"
+
+# --- Main Infinite Loop ---
+
+while true; do
+    echo "To infinity and beyond"
+    sleep 1
 done
