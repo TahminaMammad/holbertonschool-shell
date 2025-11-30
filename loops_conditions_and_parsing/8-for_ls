@@ -1,10 +1,12 @@
-
-#!/bin/bash
+#!/usr/bin/env bash
+# This script lists files and prints the part after the first dash
 
 for file in *; do
-    # Extract everything after the first dash
-    cut_name="${file#*-}"
+    # Skip if no visible files match
+    [ "$file" = "*" ] && exit 0
 
-    # If no dash exists, ${file#*-} returns the whole filename
-    echo "$cut_name"
+    # Remove everything up to the first '-'
+    stripped="${file#*-}"
+
+    echo "$stripped"
 done
