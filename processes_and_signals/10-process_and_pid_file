@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Process and PID file script
+
+# Create PID file
+echo $$ > /var/run/myscript.pid
+
+# Define signal handlers
+term_handler() {
+    echo "I hate the kill command"
+}
+
+int_handler() {
+    echo "Y U no love me?!"
+}
+
+quit_handler() {
+    rm -f /var/run/myscript.pid
+    exit 0
+}
+
+# Trap signals
+trap term_handler SIGTERM
+trap int_handler SIGINT
+trap quit_handler SIGQUIT SIGTERM
+
+# Infinite loop
+while true; do
+    echo "To infinity and beyond"
+    sleep 1
+done
