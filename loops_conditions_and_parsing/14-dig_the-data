@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Count occurrences of each IP + HTTP code combination and sort by frequency
+
+awk '{print $1, $9}' apache-access.log | sort | uniq -c | sort -rn
