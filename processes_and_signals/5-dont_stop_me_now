@@ -1,5 +1,3 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Kill the 4-to_infinity_and_beyond process
-
-# Find the PID(s) of the process by name and kill them
 pkill -f 4-to_infinity_and_beyond
