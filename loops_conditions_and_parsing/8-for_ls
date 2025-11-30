@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for file in *; do
+    # Extract everything after the first dash
+    cut_name="${file#*-}"
+
+    # If no dash exists, ${file#*-} returns the whole filename
+    echo "$cut_name"
+done
