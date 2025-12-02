@@ -1,21 +1,28 @@
 #!/usr/bin/env bash
-# Description: Creates a PID file, prints messages indefinitely, handles SIGINT, SIGTERM, and SIGQUIT
-echo $$ > /var/run/myscript.pid
+# Description: Creates a PID file in /tmp, prints messages indefinitely, handles SIGINT, SIGTERM, and SIGQUIT
+
+PID_FILE="/tmp/myscript.pid"
+echo $$ > "$PID_FILE"
+
 sigint_handler() {
     echo "Y U no love me?!"
 }
+
 sigterm_handler() {
     echo "I hate the kill command"
-    rm -f /var/run/myscript.pid
+    rm -f "$PID_FILE"
     exit 0
 }
+
 sigquit_handler() {
-    rm -f /var/run/myscript.pid
+    rm -f "$PID_FILE"
     exit 0
 }
+
 trap sigint_handler SIGINT
 trap sigterm_handler SIGTERM
 trap sigquit_handler SIGQUIT
+
 while true; do
     echo "To infinity and beyond"
     sleep 1
