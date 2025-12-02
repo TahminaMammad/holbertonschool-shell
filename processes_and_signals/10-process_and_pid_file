@@ -1,36 +1,21 @@
 #!/usr/bin/env bash
-# This script creates a PID file, runs indefinitely, and uses signal trapping (SIGTERM, SIGINT, SIGQUIT) for controlled behavior and cleanup.
-
-PID_FILE="/var/run/myscript.pid"
-
-# --- Cleanup and Termination Function ---
-cleanup() {
-    # Delete the PID file if it exists.
-    if [ -f "$PID_FILE" ]; then
-        rm -f "$PID_FILE"
-    fi
-    # Terminate the script gracefully.
+# Description: Creates a PID file, prints messages indefinitely, handles SIGINT, SIGTERM, and SIGQUIT
+echo $$ > /var/run/myscript.pid
+sigint_handler() {
+    echo "Y U no love me?!"
+}
+sigterm_handler() {
+    echo "I hate the kill command"
+    rm -f /var/run/myscript.pid
     exit 0
 }
-
-# --- Signal Traps ---
-
-# SIGTERM (kill command): Display message, then cleanup and terminate.
-trap "echo I hate the kill command; cleanup" SIGTERM
-
-# SIGQUIT (Ctrl+\): Cleanup and terminate silently.
-trap "cleanup" SIGQUIT
-
-# SIGINT (Ctrl+C): Display message, but DO NOT terminate. Resume the loop.
-trap "echo Y U no love me?!" SIGINT
-
-# --- Startup ---
-
-# Create the PID file containing the script's PID ($$). Requires sudo access.
-echo $$ > "$PID_FILE"
-
-# --- Main Infinite Loop ---
-
+sigquit_handler() {
+    rm -f /var/run/myscript.pid
+    exit 0
+}
+trap sigint_handler SIGINT
+trap sigterm_handler SIGTERM
+trap sigquit_handler SIGQUIT
 while true; do
     echo "To infinity and beyond"
     sleep 1
